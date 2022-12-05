@@ -65,10 +65,6 @@ function solver() {
       }
     }
   }
-
-  //#region Load model
-  /*  */
-  //#endregion
 }
 
 //Resize Window
