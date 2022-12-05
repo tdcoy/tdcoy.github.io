@@ -42,7 +42,7 @@ function init() {
 
   const loader = new GLTFLoader();
   loader.load(
-    "assets/models/cube.glb",
+    "assets/models/wall_straight.glb",
     function (gltf) {
       cubeMesh = gltf.scene;
       //cubeMesh.position.set(x, z, y);
