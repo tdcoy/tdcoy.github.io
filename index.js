@@ -1,16 +1,22 @@
 import * as THREE from "three";
-
 import Stats from "three/addons/libs/stats.module.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-//import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-let camera, scene, renderer;
+let camera, renderer, scene, controls;
 let plane;
 let pointer, raycaster;
 let rollOverMesh, rollOverMaterial;
-let cubeGeo, cubeMaterial;
+let cubeGeo, cubeMaterial, boxGeo;
 
 const objects = [];
+
+const gridSize = 20;
+const gridDivisions = 10;
+const boxSize = gridSize / gridDivisions;
+const modelScale = 1;
+
+const clock = new THREE.Clock();
 
 const stats = new Stats();
 const container = document.getElementById("container");
@@ -20,22 +26,23 @@ init();
 render();
 
 function init() {
-  //Camera
+  //#region Camera
   camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth / window.innerHeight,
     1,
     10000
   );
-  camera.position.set(0, 800, 1300);
+  camera.position.set(10, 16, 26);
   camera.lookAt(0, 0, 0);
+  //#endregion
 
   //Scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
 
   // roll-over helpers
-  const rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
+  const rollOverGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
   rollOverMaterial = new THREE.MeshBasicMaterial({
     color: 0xff0000,
     opacity: 0.5,
@@ -46,7 +53,7 @@ function init() {
 
   // cubes
   try {
-    cubeGeo = new THREE.BoxGeometry(50, 50, 50);
+    cubeGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
     cubeMaterial = new THREE.MeshLambertMaterial({
       color: 0xfeb74c,
       map: new THREE.TextureLoader().load(
@@ -57,16 +64,17 @@ function init() {
     console.error(error);
   }
 
-  // grid
-  const gridHelper = new THREE.GridHelper(500, 10);
+  // grid size, divisions
+  const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
   scene.add(gridHelper);
 
   //Raycast
   raycaster = new THREE.Raycaster();
   pointer = new THREE.Vector2();
 
+  //#region Enviroment
   //Ground
-  const geometry = new THREE.PlaneGeometry(1000, 1000);
+  const geometry = new THREE.PlaneGeometry(gridSize, gridSize);
   geometry.rotateX(-Math.PI / 2);
 
   plane = new THREE.Mesh(
@@ -83,45 +91,30 @@ function init() {
   directionalLight.position.set(1, 0.75, 0.5).normalize();
   scene.add(directionalLight);
   scene.add(ambientLight);
+  //#endregion
 
-  //Rendering
+  //#region Rendering
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
   container.appendChild(renderer.domElement);
+  //#endregion
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+  //#region Controls
+  /* controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0.5, 0);
   controls.update();
   controls.enablePan = false;
-  controls.enableDamping = true;
+  controls.enableDamping = true; */
+  //#endregion
 
-  //Events
+  //#region Events
   document.addEventListener("pointermove", onPointerMove);
   document.addEventListener("pointerdown", onPointerDown);
   window.addEventListener("resize", onWindowResize);
+  //#endregion
 }
-
-/* var model;
-
-const loader = new GLTFLoader();
-loader.load(
-  "../assets/models/skull.glb",
-  function (glb) {
-    console.log(glb);
-    model = glb.scene;
-    model.position.set(0, 0, 0);
-    model.scale.set(0.5, 0.5, 0.5);
-    scene.add(model);
-  },
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
-  function (error) {
-    console.error(error);
-  }
-); */
 
 function onPointerDown(event) {
   pointer.set(
@@ -129,19 +122,33 @@ function onPointerDown(event) {
     -(event.clientY / window.innerHeight) * 2 + 1
   );
 
+  //setFromCamera(vector3 origin, vector3 direction)
   raycaster.setFromCamera(pointer, camera);
 
-  const intersects = raycaster.intersectObjects(objects, false);
+  //check if hit any of the objects created (or the ground plane)
+  const intersects = raycaster.intersectObjects(objects, true);
 
   if (intersects.length > 0) {
+    //Get last object hit
     const intersect = intersects[0];
 
-    const voxel = new THREE.Mesh(cubeGeo, cubeMaterial);
-    voxel.position.copy(intersect.point).add(intersect.face.normal);
-    voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
-    scene.add(voxel);
-
-    objects.push(voxel);
+    try {
+      const loader = new GLTFLoader();
+      loader.load("assets/models/Box.glb", function (gltf) {
+        const model = gltf.scene;
+        model.position.copy(intersect.point).add(intersect.face.normal);
+        model.position
+          .divideScalar(boxSize)
+          .floor()
+          .multiplyScalar(boxSize)
+          .addScalar(boxSize / 2);
+        model.scale.set(modelScale, modelScale, modelScale);
+        scene.add(model);
+        objects.push(model);
+      });
+    } catch (error) {
+      console.error(error);
+    }
 
     render();
   }
@@ -155,20 +162,19 @@ function onPointerMove(event) {
 
   raycaster.setFromCamera(pointer, camera);
 
-  const intersects = raycaster.intersectObjects(objects, false);
+  const intersects = raycaster.intersectObjects(objects, true);
 
   if (intersects.length > 0) {
     const intersect = intersects[0];
 
     rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
     rollOverMesh.position
-      .divideScalar(50)
+      .divideScalar(boxSize)
       .floor()
-      .multiplyScalar(50)
-      .addScalar(25);
+      .multiplyScalar(boxSize)
+      .addScalar(boxSize / 2);
 
     render();
-    animate();
   }
 }
 
@@ -188,6 +194,7 @@ function render() {
 
 function animate() {
   requestAnimationFrame(animate);
+  const delta = clock.getDelta();
   //controls.update();
   stats.update();
 }
