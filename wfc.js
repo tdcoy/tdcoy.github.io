@@ -1,5 +1,5 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { modules } from "./module.js";
+import { modules, initModules } from "./module.js";
 
 let camera, renderer, scene;
 const size = 3;
@@ -15,7 +15,7 @@ function init() {
     1,
     10000
   );
-  camera.position.set(10, 10, 10);
+  camera.position.set(8, 8, 8);
   camera.lookAt(0, 0, 0);
   //#endregion
 
@@ -43,24 +43,17 @@ function init() {
   render();
 }
 
-function solver() {
+async function solver() {
   //Create sockets
+  const loadModules = await initModules();
   for (let z = 0; z < size; z++) {
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        //Create helper mesh
-        const socketHelper = new THREE.BoxGeometry(1, 1, 1);
-        const socketHelperMat = new THREE.MeshBasicMaterial({
-          color: 0xff0000,
-          opacity: 0.3,
-          transparent: true,
-        });
-        const socketHelperMesh = new THREE.Mesh(socketHelper, socketHelperMat);
-        socketHelperMesh.position.set(x, y, z);
-        scene.add(socketHelperMesh);
-
         //instantiate module at this position
-
+        let mesh = new THREE.Object3D();
+        mesh = modules[0].mesh.clone();
+        mesh.position.set(x, y, z);
+        scene.add(mesh);
         render();
       }
     }
