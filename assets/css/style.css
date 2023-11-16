@@ -223,8 +223,8 @@ a {
 
 @media (width >= 700px) {
   .small-post-container {
-    grid-template-columns: 1fr 1fr 1fr;
-    width: 70vw;
+    grid-template-columns: 1fr 1fr;
+    width: 40vw;
   }
 }
 @media (width <= 700px) {
