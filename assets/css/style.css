@@ -64,8 +64,8 @@ body {
   margin-left: 0px;
   margin-right: 0px;
   background-size: 100px 100px;
-  background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
-    linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+  background-image: linear-gradient(to right, #ffffff08 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
 }
 
 .title-v1 {

@@ -59,7 +59,7 @@
             more so I came across
             <a href="https://www.youtube.com/@simondev758">Simon Dev</a>, a
             youtuber that focus's on 3D applications made with javascript and
-            who's work would become a great resource for the project.
+            whose work would become a great resource for the project.
           </p>
           <p>
             After getting a demo scene up and running it seemed appropriate to
@@ -76,7 +76,7 @@
             find free-use images with interesting details to use for textures.
             For this model I went to
             <a href="https://images.nasa.gov/">nasa's image library</a>, a
-            horible and clunky website, found a few images and collaged them
+            horrible and clunky website, found a few images and collaged them
             together. Here you can see how the highlighted portion of the mesh
             is unwrapped and laid over the texture to achieve that low-res
             aesthetic. I like to use the same image to texture a model so the
@@ -89,13 +89,13 @@
           <p>
             At this time I also created another simplified mesh to use as the
             collider for the model and made a simple level to test with. Using
-            the Bullet physics engine is pretty intemidating to be honest. If it
+            the Bullet physics engine is pretty intimidating to be honest. If it
             weren't for Simon's tutorial on integrating it I would have been
-            scratching my head for awhile on that one. You essentially have to
-            create 2 seperate "instances" of the game and sync them together.
+            scratching my head for a while on that one. You essentially have to
+            create 2 separate "instances" of the game and sync them together.
             One "graphics world" visible to the player, and another "physics
             world" where all collisions are calculated based on kinetic
-            controllers and collision meshes. The lower fideltiy collision
+            controllers and collision meshes. The lower fidelity collision
             meshes make it cheaper to calculate collisions, but can cause some
             weird graphical issues if gone too far. Other issues I ran into with
             the physics, if I made a valley too steep for the collider, it would
@@ -115,9 +115,9 @@
             instead of rotating the torso, I rotated the gun turret instead.
             Some games will rotated the torso in both axis, but in my mind
             treating it like a tank turret where the gun and turret rotate in
-            independent axis makes a lot more since. So when the player is
-            sitting stationairy, the turret rotates with the camera, but when
-            the player starts moving, the legs will snap in allignment with the
+            independent axis makes a lot more sence. So when the player is
+            sitting stationary, the turret rotates with the camera, but when the
+            player starts moving, the legs will snap in alignment with the
             direction of movement.
           </p>
           <p>
@@ -134,15 +134,15 @@
           <p>
             To handle movement the users input was captured for axis of movement
             and the direction the camera was facing was applied to create a new
-            vector for the direction of movemvent in either direction. This
+            vector for the direction of movement in either direction. This
             vector could then be passed to the physics controller and the
             character controller. It was important to me that the legs move
             independently of the torso. So I just rotated the legs in the
             direction of the movement vector to achieve that effect. But this
             did produce a new problem, the legs and torso were one single
-            animated mesh. So I had to go back to my blender file and seperate
-            them into 2 seperate meshes so I could apply rotations on them
-            seperately.
+            animated mesh. So I had to go back to my blender file and separate
+            them into 2 separate meshes so I could apply rotations on them
+            separately.
           </p>
 
           <p>
@@ -151,14 +151,14 @@
 
           <p>
             At this time I also created a simple UI crosshair that helped sell
-            the feeling of weight a lot better. It consits of 2 parts, a dot
+            the "feeling of weight" a lot better. It consists of 2 parts, a dot
             that is always fixed to the center of the screen and a circle that
             follows the rotation of the camera. Which is fine, but the torso
             only rotates on the horizontal axis, the gun turret rotates on both
             horizontal and vertical. But the gun turret is offset from the
             center so the follow-crosshair would always be a little off center.
             My solution was to create a point far off in space that was attached
-            to the gun turret so the offset would become unnoticable. A little
+            to the gun turret so the offset wouldn't be noticeable. A little
             hack-y, but it works.
           </p>
 
@@ -174,7 +174,8 @@
             I found that breaking projects up into little pieces helps me
             maintain a realistic scope and thus I actually finish things. So,
             for now this is finished. If you want to play around with it all the
-            code is on my <a href="https://github.com/tdcoy">github</a>. I'd
+            code is on my
+            <a href="https://github.com/tdcoy/mech-controller">github</a>. I'd
             like to have it running on github pages, but I haven't figured out
             how to setup node.js with it yet.
           </p>
