@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <link rel="shortcut icon" type="image/png" href="/assets\images\2023-05\image.png"> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- HTML Meta Tags -->
+    <title>terrence coy | drove</title>
+
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <div class="header">
+      <a href="/" class="clickable">
+        <p class="title-v1">terrence coy</p>
+      </a>
+      <a href="/about" class="clickable about">
+        <p class="subtitle">about</p>
+      </a>
+    </div>
+    <div class="container">
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-text">
+            <p class="title-v1">Drove</p>
+            <p class="post-date">August 2021</p>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <h1>Concept</h1>
+          <p>
+            Every once in a while I will get an itch to play a game that I can’t
+            just scratch. I love the lore of the Elder Scrolls series, but the
+            crafting was phoned in and the gameplay so clunky. I used to play
+            this little MMORPG project called
+            <a href="https://www.havenandhearth.com/portal/">Haven and Hearth</a
+            >. It was so well fleshed out and the crafting had a lot of depth
+            and making anything in that game felt like an accomplishment. I’ve
+            always wanted to do a Tarkov-like dungeon crawler with a really
+            unique crafting system. So I set off to build that project. I made
+            this using Unity and created all the 3d assets in Blender.
+          </p>
+
+          <h2>Inventory</h2>
+          <p>
+            First I started with an inventory system. I don’t know why but
+            making graphical representations of items is really rewarding to me.
+            I’ve built a lot of different kinds of inventories in the past from:
+            Ultima, Minecraft and Diablo styles. But multi-grid like Tarkov and
+            Diablo are by far my favorite. The inventory “Tetris” really opens
+            up a lot of possibilities for immersive gameplay. So for this
+            project I knew that’s what I wanted.
+          </p>
+
+          <p>
+            <img src="./images/drove-inventory.gif" alt="Untitled" />
+          </p>
+
+          <p>
+            I made it by generating a matrix of inventory “slots”. Each slot
+            just has a reference to the item if it has one stored in it. So when
+            the player clicks on the slot, it checks if there is something in
+            the slot. If there is then it creates a “draggable” item that
+            follows the cursor. If the player tries to drop the item in another
+            slot it checks for collisions based on the size of the item. If
+            there are more than one item, the item won’t fit in the bounds of
+            the grid or the item is dropped out of the inventory window, it will
+            return the time to its previous slot(s). If there is only one item
+            in the region then it checks if that time can fit in the previous
+            region that the dragged item came from. If it can fit then it will
+            swap the 2 items, else it just puts the dragged item back. Like
+            items can also stack and a hover-over window will pop-up giving
+            information about the item as well.
+          </p>
+
+          <p>
+            Equipment slots are just special slots that restrict items of
+            certain types to be placed in them, like gloves in the hand slot,
+            pants in the legs slot, etc. Even though this project is a fps, I
+            wanted to have a little character model to see items being equipped
+            to. It’s just a skinned mesh that updates when the equipment slots
+            are interacted with.
+          </p>
+
+          <p>
+            I also added lootable containers that just had an event system such
+            that when interacted with it would instantiate a new inventory grid
+            based on the loot table and size of the container.
+          </p>
+
+          <p>
+            <img src="./images/drove-chest.gif" alt="Untitled" />
+          </p>
+
+          <h2>Animation Challenges</h2>
+          <p>
+            Since I had the character model in the inventory I really wanted for
+            equipment to be represented on the first person arm model as well.
+            My first approach was to create a model for the arms and create an
+            animation for each weapon and action, so then I could just swap out
+            skinned meshes for the different clothes and attach the weapons to
+            the hand bone. That worked fine until I added the stupid crossbow.
+          </p>
+
+          <p>
+            <img src="./images/drove-crossbow.gif" alt="Untitled" />
+          </p>
+
+          <p>
+            There were just too many working components to get it to look right.
+            Because the crossbow also had its own animations for drawing the bow
+            back. In the end I just animated the crossbow and arms together and
+            exported it as a single fbx.
+          </p>
+
+          <h2>Dungeons</h2>
+
+          <p>
+            The concept in my mind for this project is that there would be these
+            ancient castle ruins that the player would explore. Castles for the
+            most part contain the same features: chapel, halls, bed rooms,
+            dungeons, kitchens, soldier quarters, ect. So my plan was to create
+            a socket system spanning out from the initial great hall where
+            doorways would lead to procedurally generated rooms filled with
+            prefabs and enemies. Below is an example of a dining hall prefab
+            that led into a chapel. That way each play through would have a
+            sense of randomness and discovery to it.
+          </p>
+
+          <p>
+            <img src="./images/drove-gameplay.gif" alt="Untitled" />
+          </p>
+
+          <p>
+            AI was handled by a simple finite state machine where the enemies
+            would be alerted by the player if they were in proximity to it. Then
+            would chase the player until it lost line of sight, died or killed
+            the player.
+          </p>
+
+          <p>
+            <img src="./images/drove-skeleton.gif" alt="Untitled" />
+          </p>
+
+          <h1>Conclusion</h1>
+          <p>
+            This project taught me a lot about managing the scope of a project
+            and finding the limits of my abilities. The character movement is
+            not great and I feel like the gameplay loop would get stale quick.
+            That’s something I think a lot about these survival crafting games,
+            once you reach the end game there’s really nothing to keep
+            engagement. There has to be some sort of reset or drive. I had fun
+            making this either way and hope to revisit the idea in the future,
+            maybe do Three.js port.
+          </p>
+
+          <p>
+            I hope you enjoyed reading about my efforts. I don't have this one
+            on github because if I'm being honest it's a mess. It was written
+            before I learned about code management and the asset folders are a
+            complete mess of character models and rigs from all the different
+            attempts I tried to get things working. If you have any questions or
+            feedback feel free to
+            <a href="mailto:tdcoy510@gmail.com">contact me!</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
