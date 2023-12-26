@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <link rel="shortcut icon" type="image/png" href="/assets\images\2023-05\image.png"> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- HTML Meta Tags -->
+    <title>terrence coy | Procedural Map Generation</title>
+
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <div class="header">
+      <a href="/" class="clickable">
+        <p class="title-v1">terrence coy</p>
+      </a>
+      <a href="/about" class="clickable about">
+        <p class="subtitle">about</p>
+      </a>
+    </div>
+    <div class="container">
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-text">
+            <p class="title-v1">Procedural Map Generation</p>
+            <p class="post-date">December 2023</p>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <h1>Concept</h1>
+          <p>
+            I have always been fascinated by the idea of procedurally generating
+            content for games. In the past I experimented with perlin noise in
+            the Unity engine and have attempted my own version of "wave function
+            collapse". I have never tried to really build 3d environments
+            procedurally before though. I did some research and found many well
+            document example of placing prefabricated rooms randomly and
+            connecting them. But I wanted to see if the rooms could also be
+            randomly generated as well. This is my first attempt at this
+            project.
+          </p>
+          <p>
+            The main inspiration for this project were medieval castles. I
+            researched different layouts and designs and noted how they were
+            constructed. Towers would surround the castle and within it there
+            were wards that would connect to the main rooms of the castles. Each
+            main room would be connected to smaller support rooms; for example a
+            kitchen would have a buttlery, bottlery or pantry adjacent to it.
+          </p>
+
+          <p><img src="./images/procgen_castle.jpg" alt="Untitled" /></p>
+
+          <h1>Implementation</h1>
+
+          <p>
+            To create these rooms, a field of points would be generated with
+            <a href="https://www.jasondavies.com/poisson-disc/"
+              >Poisson-disc sampling</a
+            >. These points would encompass the size of the map and the density
+            would be dependent on the the resolution of the mesh that would make
+            up the room.
+          </p>
+
+          <p><img src="./images/procgen_points.jpg" alt="Untitled" /></p>
+
+          <p>
+            <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation"
+              >Delaunay triangulation</a
+            >
+            was then applied to triangulate the points generated. After this
+            process any triangles that had extreme angles would be removed.
+          </p>
+
+          <p><img src="./images/procgen_triangles.jpg" alt="Untitled" /></p>
+
+          <p>
+            From here, a new field of points were generated to serve as spawn
+            points for the rooms. These points were then trimmed to remove any
+            near the borders of the map.
+          </p>
+          <p>
+            <img src="./images/procgen_spawns.jpg" alt="Untitled" />
+          </p>
+          <p>
+            For every tower that needs to be created, a random spawn point is
+            chosen and a tower would be generated at that point. A random point
+            within the tower would be chose as its "center" and using
+            <a
+              href="https://www.geeksforgeeks.org/dijkstras-algorithm-for-adjacency-list-representation-greedy-algo-8/"
+              >Dijkstra’s algorithm</a
+            >
+            to find the shortest path, the "walls" of the castle are defined and
+            all potential spawn points outside of the walls are removed.
+          </p>
+
+          <p>
+            <img src="./images/procgen_towers.jpg" alt="Untitled" />
+          </p>
+
+          <p>
+            Spawns for main rooms are picked first, then their support rooms.
+            After checking that all rooms have spawn points and that there are
+            enough triangles to build all the rooms the layout is accepted. The
+            rooms are built by "growing" the mesh from the rooms spawn points.
+            Adjacent triangles are selected until the room is large enough or it
+            runs out of room, then the process begins all over. Rooms are shown
+            below as colored regions. Once all rooms have been constructed, the
+            rooms are connected by a Delaunay triangulation again and using
+            <a
+              href=https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
+              >Prim’s Algorithm</a
+            > a minimum spanning tree graph is made to ensure all
+            rooms are reachable.
+          </p>
+
+          <p>
+            <img src="./images/procgen_mst.jpg" alt="Untitled" />
+          </p>
+
+          <p>
+            To connect each of the rooms together a path would need to be found
+            between each room. Using the edges from the graph created by the
+            MST, a path could be found by using the
+            <a href="https://en.wikipedia.org/wiki/A*_search_algorithm"
+              >A* algorithm</a
+            >. If paths were formed that went through adjacent rooms, doorways
+            could be added, if the paths went through empty space, hallways are
+            created to connect the rooms.
+          </p>
+
+          <p>
+            <img src="./images/procgen_path.jpg" alt="Untitled" />
+          </p>
+
+          <h1>Conclusion</h1>
+
+          <p>
+            This project taught me a lot about managing time complexities and
+            optimization. The algorithm to generate a useful layout would
+            sometimes take many iterations to produce a usable outcome. Further
+            optimizations could still be taken from here, like using heap sort
+            for A*, creating a single data structure for nodes instead of
+            different structures for triangle data and node data. I think from
+            here I'd like to explore irregular grids. I'd like to aim for an end
+            result with a bit more uniformness, but this has been a fun stepping
+            stone in my journey to learn more about procedural generation.
+          </p>
+
+          <p>
+            This project is live <a href="https://threejs.org/">here</a> and the
+            code is available on my
+            <a href="https://github.com/tdcoy">github</a>. Thanks for reading,
+            if you have any questions or feedback feel free to
+            <a href="mailto:tdcoy510@gmail.com">contact me!</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
